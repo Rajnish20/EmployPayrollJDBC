@@ -2,7 +2,9 @@ package com.magic.employpayroll.service;
 
 import com.magic.employpayroll.entity.Employ;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class EmployPayrollServiceDB {
 
@@ -42,5 +44,13 @@ public class EmployPayrollServiceDB {
                 .filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<Employ> getEmployListInGivenDateRange(LocalDate startDate, LocalDate endDate) {
+        return employPayrollService.getEmployeePayrollForDateRange(startDate, endDate);
+    }
+
+    public Map<String, Double> readAverageSalaryByGender() {
+        return employPayrollService.getAverageSalaryByGender();
     }
 }
