@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.magic.employpayroll.PayrollServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-20T10:15:39" hostname="DESKTOP-38KI29F" time="0.37">
+<testsuite name="com.magic.employpayroll.PayrollServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-20T10:25:45" hostname="DESKTOP-38KI29F" time="0.589">
   <properties/>
-  <testcase name="givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount()" classname="com.magic.employpayroll.PayrollServiceTest" time="0.37"/>
+  <testcase name="givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount()" classname="com.magic.employpayroll.PayrollServiceTest" time="0.589"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

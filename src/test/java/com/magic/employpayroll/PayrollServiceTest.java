@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 public class PayrollServiceTest {
-
-
+    @Test
+    public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
+        EmployPayrollService employPayrollService = new EmployPayrollService();
+        List<Employ> employList = employPayrollService.readData();
+        Assertions.assertEquals(3, employList.size());
+    }
 }
