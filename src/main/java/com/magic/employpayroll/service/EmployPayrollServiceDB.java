@@ -2,6 +2,7 @@ package com.magic.employpayroll.service;
 
 import com.magic.employpayroll.entity.Employ;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -9,17 +10,11 @@ import java.util.Map;
 public class EmployPayrollServiceDB {
 
     private List<Employ> employeeList;
-    private EmployPayrollService employPayrollService;
+    private final EmployPayrollService employPayrollService;
 
 
-    public EmployPayrollServiceDB() {
+    public EmployPayrollServiceDB() throws SQLException {
         employPayrollService = EmployPayrollService.getInstance();
-    }
-
-    public EmployPayrollServiceDB(List<Employ> employeeList) {
-        this();
-        this.employeeList = employeeList;
-
     }
 
     public List<Employ> readEmployeePayrollData() {
@@ -52,5 +47,14 @@ public class EmployPayrollServiceDB {
 
     public Map<String, Double> readAverageSalaryByGender() {
         return employPayrollService.getAverageSalaryByGender();
+    }
+
+    public List<Employ> addEmployToDB(String name, double salary, LocalDate startDate, String gender)
+    {
+        employeeList = this.readEmployeePayrollData();
+        int id = employPayrollService.addNewEmployToEmploy_PayrollDB(name,salary,startDate,gender);
+        if(id != -1)
+            this.employeeList.add(new Employ(id,name,salary,startDate,gender));
+        return this.employeeList;
     }
 }

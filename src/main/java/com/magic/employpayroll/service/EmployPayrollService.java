@@ -1,6 +1,7 @@
 package com.magic.employpayroll.service;
 
 import com.magic.employpayroll.entity.Employ;
+import com.magic.employpayroll.utility.ConnectionClass;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,40 +11,27 @@ import java.util.List;
 import java.util.Map;
 
 public class EmployPayrollService {
+    ConnectionClass connectionClass = new ConnectionClass();
+    private final Connection connection = connectionClass.getConnection();
     private PreparedStatement employeePayrollDataStatement;
     private static EmployPayrollService employPayrollService;
 
-    private EmployPayrollService() {
+    private EmployPayrollService() throws SQLException {
     }
 
-    public static EmployPayrollService getInstance() {
+    public static EmployPayrollService getInstance() throws SQLException {
         if (employPayrollService == null)
             employPayrollService = new EmployPayrollService();
         return employPayrollService;
     }
 
-    private Connection getConnection() throws SQLException {
-        String jdbcURL = "jdbc:mysql://localhost:3306/payrollservice?useSSL=false";
-        String username = "root";
-        String password = "R@jni$h95";
-        Connection connection;
-        connection = DriverManager.getConnection(jdbcURL, username, password);
-        return connection;
-    }
-
     public List<Employ> readData() {
         String sql = "Select * from employ_payroll;";
         List<Employ> employList = new ArrayList<>();
-        try (Connection connection = getConnection()) {
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                double salary = resultSet.getDouble("salary");
-                LocalDate startDate = resultSet.getDate("start").toLocalDate();
-                employList.add(new Employ(id, name, salary, startDate));
-            }
+            employList = this.getEmployeePayrollData(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -67,7 +55,6 @@ public class EmployPayrollService {
 
     private void prepareStatementForEmployeeData() {
         try {
-            Connection connection = this.getConnection();
             String sql = "SELECT * FROM employ_payroll WHERE name = ?";
             employeePayrollDataStatement = connection.prepareStatement(sql);
         } catch (SQLException e) {
@@ -75,19 +62,20 @@ public class EmployPayrollService {
         }
     }
 
+    public int updateEmployeeData(String name, double salary) {
+        return this.updateEmployeeDataUsingStatement(name, salary);
+    }
+
+
     private int updateEmployeeDataUsingStatement(String name, double salary) {
-        String sql = String.format("update employee_payroll set salary = %.2f where name = '%s';", salary, name);
-        try (Connection connection = this.getConnection()) {
+        String sql = String.format("update employ_payroll set salary = %.2f where name = '%s';", salary, name);
+        try {
             Statement statement = connection.createStatement();
             return statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
-    }
-
-    public int updateEmployeeData(String name, double salary) {
-        return this.updateEmployeeDataUsingStatement(name, salary);
     }
 
     public List<Employ> getEmployeePayrollForDateRange(LocalDate startDate, LocalDate endDate) {
@@ -98,7 +86,7 @@ public class EmployPayrollService {
 
     private List<Employ> getEmployeePayrollDataUsingDB(String sql) {
         List<Employ> employList = new ArrayList<>();
-        try (Connection connection = getConnection()) {
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             employList = this.getEmployeePayrollData(resultSet);
@@ -111,7 +99,7 @@ public class EmployPayrollService {
     public Map<String, Double> getAverageSalaryByGender() {
         String sql = "SELECT gender, AVG(salary) as average_salary FROM employ_payroll GROUP BY gender;";
         Map<String, Double> genderToAverageSalaryMap = new HashMap<>();
-        try (Connection connection = this.getConnection()) {
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -134,11 +122,30 @@ public class EmployPayrollService {
                 String name = resultSet.getString("name");
                 double salary = resultSet.getDouble("salary");
                 LocalDate startDate = resultSet.getDate("start").toLocalDate();
-                employeePayrollList.add(new Employ(id, name, salary, startDate));
+                String gender = resultSet.getString("gender");
+                employeePayrollList.add(new Employ(id, name, salary, startDate, gender));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return employeePayrollList;
+    }
+
+    public int addNewEmployToEmploy_PayrollDB(String name, double salary, LocalDate startDate, String gender) {
+        int id = -1;
+        String sql = String.format("INSERT INTO employ_payroll(name, salary, start,gender) "
+                + "VALUES( '%s', '%s', '%s', '%s' )", name, salary, Date.valueOf(startDate), gender);
+        try {
+            Statement statement = connection.createStatement();
+            int rowsAffected = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+            if (rowsAffected == 1) {
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next())
+                    id = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
     }
 }

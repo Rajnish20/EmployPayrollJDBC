@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.magic.employpayroll.PayrollServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-20T18:30:46" hostname="DESKTOP-38KI29F" time="0.333">
+<testsuite name="com.magic.employpayroll.PayrollServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-21T17:29:34" hostname="DESKTOP-38KI29F" time="0.365">
   <properties/>
-  <testcase name="givenPayrollDataWhenAverageSalaryRetrievedByGenderShouldReturnProperValue()" classname="com.magic.employpayroll.PayrollServiceTest" time="0.333"/>
+  <testcase name="givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount()" classname="com.magic.employpayroll.PayrollServiceTest" time="0.365"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
