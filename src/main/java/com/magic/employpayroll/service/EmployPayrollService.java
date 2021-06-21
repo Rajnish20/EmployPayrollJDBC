@@ -148,4 +148,63 @@ public class EmployPayrollService {
         }
         return id;
     }
+
+    public Employ addNewEmploy(String name, double salary, LocalDate startDate, String gender) {
+        int employeeId = -1;
+        Employ employ = null;
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try (Statement statement = connection.createStatement()) {
+            String sql = String.format("INSERT INTO employ_payroll(name,salary,start,gender) "
+                    + "VALUES( '%s', '%s', '%s', '%s' )", name, salary, Date.valueOf(startDate), gender);
+            int rowAffected = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+            if (rowAffected == 1) {
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next())
+                    employeeId = resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try (Statement statement = connection.createStatement()) {
+            double deductions = salary * 0.2;
+            double taxablePay = salary - deductions;
+            double tax = taxablePay * 0.1;
+            double netPay = salary - tax;
+            String sql = String
+                    .format("INSERT INTO payroll_details(id, basic_pay, deductions, taxable_Pay, tax, net_Pay)"
+                            + "VALUES(%s, %s, %s, %s, %s, %s)", employeeId, salary, deductions, taxablePay, tax, netPay);
+            int rowAffected = statement.executeUpdate(sql);
+            if (rowAffected == 1) {
+                employ = new Employ(employeeId, name, salary, startDate, gender);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try {
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return employ;
+    }
 }

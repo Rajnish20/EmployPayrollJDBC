@@ -49,12 +49,18 @@ public class EmployPayrollServiceDB {
         return employPayrollService.getAverageSalaryByGender();
     }
 
-    public List<Employ> addEmployToDB(String name, double salary, LocalDate startDate, String gender)
-    {
+    public List<Employ> addEmployToDB(String name, double salary, LocalDate startDate, String gender) {
         employeeList = this.readEmployeePayrollData();
-        int id = employPayrollService.addNewEmployToEmploy_PayrollDB(name,salary,startDate,gender);
-        if(id != -1)
-            this.employeeList.add(new Employ(id,name,salary,startDate,gender));
+        int id = employPayrollService.addNewEmployToEmploy_PayrollDB(name, salary, startDate, gender);
+        if (id != -1)
+            this.employeeList.add(new Employ(id, name, salary, startDate, gender));
         return this.employeeList;
+    }
+
+    public boolean addEmploy(String name, double salary, LocalDate startDate, String gender) {
+        this.employeeList = this.readEmployeePayrollData();
+        Employ employ = employPayrollService.addNewEmploy(name, salary, startDate, gender);
+        this.employeeList.add(employ);
+        return employ.equals(this.getEmployeePayrollData(name));
     }
 }

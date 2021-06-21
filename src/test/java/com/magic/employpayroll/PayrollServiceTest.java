@@ -47,11 +47,18 @@ public class PayrollServiceTest {
     @Test
     public void givenEmployData_WhenAddedToDB_ShouldAlsoAddedInEmployList() throws SQLException {
         EmployPayrollServiceDB employPayrollServiceDB = new EmployPayrollServiceDB();
-        LocalDate startDate = LocalDate.of(2019,01,02);
-        List<Employ>employList = employPayrollServiceDB.addEmployToDB("Lee",89000.00,startDate,"M");
-        Assertions.assertEquals(4,employList.size());
+        LocalDate startDate = LocalDate.of(2019, 01, 02);
+        List<Employ> employList = employPayrollServiceDB.addEmployToDB("Lee", 89000.00, startDate, "M");
+        Assertions.assertEquals(4, employList.size());
     }
 
+    @Test
+    public void givenEmployData_WhenAddedToDB_ShouldAddNewRecordToPayrollDetailsAutomatically() throws SQLException {
+        EmployPayrollServiceDB employPayrollServiceDB = new EmployPayrollServiceDB();
+        LocalDate startDate = LocalDate.of(2017, 04, 03);
+        boolean result = employPayrollServiceDB.addEmploy("Lucifer", 980000.00, startDate, "M");
+        Assertions.assertTrue(result);
+    }
 
 }
 
