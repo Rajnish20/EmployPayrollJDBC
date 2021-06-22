@@ -4,6 +4,7 @@ import com.magic.employpayroll.entity.Employ;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,18 +50,22 @@ public class EmployPayrollServiceDB {
         return employPayrollService.getAverageSalaryByGender();
     }
 
-    public List<Employ> addEmployToDB(String name, double salary, LocalDate startDate, String gender) {
-        employeeList = this.readEmployeePayrollData();
+    public void addEmployToDB(String name, double salary, LocalDate startDate, String gender) {
         int id = employPayrollService.addNewEmployToEmploy_PayrollDB(name, salary, startDate, gender);
-        if (id != -1)
-            this.employeeList.add(new Employ(id, name, salary, startDate, gender));
-        return this.employeeList;
+        this.employeeList.add(new Employ(id, name, salary, startDate, gender));
     }
 
-    public boolean addEmploy(String name, double salary, LocalDate startDate, String gender) {
-        this.employeeList = this.readEmployeePayrollData();
+    public void addEmploy(String name, double salary, LocalDate startDate, String gender) {
         Employ employ = employPayrollService.addNewEmploy(name, salary, startDate, gender);
         this.employeeList.add(employ);
-        return employ.equals(this.getEmployeePayrollData(name));
+    }
+
+    public int addMultipleEmployToDB(List<Employ> employs) {
+        employs.forEach(employ -> {
+            this.addEmploy(employ.name, employ.salary, employ.startDate,
+                    employ.gender);
+            System.out.println(employ.name + " Added");
+        });
+        return this.employeeList.size();
     }
 }

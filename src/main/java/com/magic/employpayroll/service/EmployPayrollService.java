@@ -1,7 +1,7 @@
 package com.magic.employpayroll.service;
 
 import com.magic.employpayroll.entity.Employ;
-import com.magic.employpayroll.utility.ConnectionClass;
+import com.magic.employpayroll.utility.DBConnection;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class EmployPayrollService {
-    ConnectionClass connectionClass = new ConnectionClass();
-    private final Connection connection = connectionClass.getConnection();
+    DBConnection dbConnection = new DBConnection();
+    private final Connection connection = dbConnection.getConnection();
     private PreparedStatement employeePayrollDataStatement;
     private static EmployPayrollService employPayrollService;
 
@@ -198,12 +198,6 @@ public class EmployPayrollService {
             connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return employ;
     }
