@@ -85,6 +85,23 @@ public class PayrollServiceTest {
         Assertions.assertEquals(6,size);
     }
 
+    @Test
+    public void given6Employ_WhenAddedToDBUsingThreads_ShouldMatchEmployeeEntries() throws SQLException {
+        EmployPayrollServiceDB employPayrollServiceDB = new EmployPayrollServiceDB();
+        Employ[] employs = {
+                new Employ(0, "Samuel", 90000.00,LocalDate.now(), "M"),
+                new Employ(0, "Belie", 10000.00, LocalDate.now(),"F"),
+                new Employ(0, "Rock", 7500.00, LocalDate.now(),"M"),
+                new Employ(0, "Bella", 150000.00, LocalDate.now(),"F"),
+                new Employ(0, "Rosalie", 25000.00, LocalDate.now(),"F"),
+        };
+        employPayrollServiceDB.readEmployeePayrollData();
+        Instant start = Instant.now();
+        int size = employPayrollServiceDB.addMultipleEmployToDBUsingThreads(Arrays.asList(employs));
+        Instant end = Instant.now();
+        System.out.println("Duration Without Threads " + Duration.between(start,end));
+        Assertions.assertEquals(6,size);
+    }
 
 }
 

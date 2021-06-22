@@ -68,4 +68,25 @@ public class EmployPayrollServiceDB {
         });
         return this.employeeList.size();
     }
+
+    public int addMultipleEmployToDBUsingThreads(List<Employ> employs) {
+        Map<Integer, Boolean> employAdditionStatus = new HashMap<>();
+        employs.forEach(employ -> {
+            Runnable task = () -> {
+                employAdditionStatus.put(employ.hashCode(), false);
+                this.addEmploy(employ.name, employ.salary, employ.startDate, employ.gender);
+                employAdditionStatus.put(employ.hashCode(), true);
+            };
+            Thread thread = new Thread(task);
+            thread.start();
+        });
+        while (employAdditionStatus.containsValue(false)) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return employeeList.size();
+    }
 }
