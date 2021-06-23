@@ -24,8 +24,8 @@ public class PayrollServiceTest {
     @Test
     public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDB() throws SQLException {
         EmployPayrollServiceDB employPayrollServiceDB = new EmployPayrollServiceDB();
-        List<Employ> employList = employPayrollServiceDB.readEmployeePayrollData();
-        employPayrollServiceDB.updateEmployeeSalary("Sam", 900000.00);
+        employPayrollServiceDB.readEmployeePayrollData();
+        employPayrollServiceDB.updateEmployeeSalary(1, 900000.00);
         boolean result = employPayrollServiceDB.checkEmployeePayrollInSyncWithDB("Sam");
         Assertions.assertTrue(result);
     }
@@ -99,7 +99,7 @@ public class PayrollServiceTest {
         Instant start = Instant.now();
         int size = employPayrollServiceDB.addMultipleEmployToDBUsingThreads(Arrays.asList(employs));
         Instant end = Instant.now();
-        System.out.println("Duration Without Threads " + Duration.between(start,end));
+        System.out.println("Duration With Threads " + Duration.between(start,end));
         Assertions.assertEquals(6,size);
     }
 

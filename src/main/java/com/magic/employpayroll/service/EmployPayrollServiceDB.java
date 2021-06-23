@@ -28,16 +28,22 @@ public class EmployPayrollServiceDB {
         return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
     }
 
-    public void updateEmployeeSalary(String name, double salary) {
-        int result = employPayrollService.updateEmployeeData(name, salary);
+    public void updateEmployeeSalary(int id, double salary) {
+        int result = employPayrollService.updateEmployeeData(id, salary);
         if (result == 0) return;
-        Employ employ = this.getEmployeePayrollData(name);
+        Employ employ = this.getEmployeePayrollData(id);
         if (employ != null) employ.salary = salary;
     }
 
     private Employ getEmployeePayrollData(String name) {
         return this.employeeList.stream()
                 .filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+    private Employ getEmployeePayrollData(int  id) {
+        return this.employeeList.stream()
+                .filter(employeePayrollDataItem -> employeePayrollDataItem.id == id)
                 .findFirst()
                 .orElse(null);
     }

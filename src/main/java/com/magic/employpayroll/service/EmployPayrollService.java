@@ -62,16 +62,51 @@ public class EmployPayrollService {
         }
     }
 
-    public int updateEmployeeData(String name, double salary) {
-        return this.updateEmployeeDataUsingStatement(name, salary);
+    public int updateEmployeeData(int id, double salary) {
+        return this.updateEmployeeDataUsingStatement(id, salary);
     }
 
 
-    private int updateEmployeeDataUsingStatement(String name, double salary) {
-        String sql = String.format("update employ_payroll set salary = %.2f where name = '%s';", salary, name);
+    private int updateEmployeeDataUsingStatement(int id, double salary) {
         try {
-            Statement statement = connection.createStatement();
-            return statement.executeUpdate(sql);
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try (Statement statement = connection.createStatement()) {
+            String sql = String.format("update employ_payroll set salary = %.2f where id = '%s';", salary, id);
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try (Statement statement = connection.createStatement()) {
+            double deductions = salary * 0.2;
+            double taxablePay = salary - deductions;
+            double tax = taxablePay * 0.1;
+            double netPay = salary - tax;
+            String sql = String.format("update payroll_details set basic_pay = '%s'," +
+                    "                   deductions = '%s'," +
+                    "                   taxable_pay = '%s'," +
+                    "                   tax = '%s'," +
+                    "                   net_pay = '%s' where id = '%s';",salary,deductions,taxablePay,tax,netPay,id);
+
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        try {
+            connection.commit();
+            return 1;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -149,7 +184,7 @@ public class EmployPayrollService {
         return id;
     }
 
-    public Employ addNewEmploy(String name, double salary, LocalDate startDate, String gender) {
+    public synchronized Employ addNewEmploy(String name, double salary, LocalDate startDate, String gender) {
         int employeeId = -1;
         Employ employ = null;
         try {

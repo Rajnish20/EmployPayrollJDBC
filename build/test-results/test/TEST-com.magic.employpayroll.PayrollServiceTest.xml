@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.magic.employpayroll.PayrollServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-22T18:27:05" hostname="DESKTOP-38KI29F" time="0.456">
+<testsuite name="com.magic.employpayroll.PayrollServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-06-23T11:06:58" hostname="DESKTOP-38KI29F" time="0.377">
   <properties/>
-  <testcase name="given6Employ_WhenAddedToDBUsingThreads_ShouldMatchEmployeeEntries()" classname="com.magic.employpayroll.PayrollServiceTest" time="0.456"/>
-  <system-out><![CDATA[Duration Without Threads PT0.048S
+  <testcase name="given6Employ_WhenAddedToDBUsingThreads_ShouldMatchEmployeeEntries()" classname="com.magic.employpayroll.PayrollServiceTest" time="0.377"/>
+  <system-out><![CDATA[Duration With Threads PT0.051S
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
